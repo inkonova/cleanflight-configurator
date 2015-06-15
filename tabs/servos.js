@@ -91,10 +91,10 @@ TABS.servos.initialize = function (callback) {
             $('div.tab-servos table.fields').append('\
                 <tr> \
                     <td style="text-align: center">' + name + '</td>\
-                    <td class="min"><input type="number" min="100" max="2500" value="' + SERVO_CONFIG[obj].min + '" /></td>\
-                    <td class="middle"><input type="number" min="500" max="2500" value="' + SERVO_CONFIG[obj].middle +'" /></td>\
-                    <td class="max"><input type="number" min="500" max="3000" value="' + SERVO_CONFIG[obj].max +'" /></td>\
-                    <td class="minLimit"><input type="number" min="-90" max="0" value="' + SERVO_CONFIG[obj].minLimit +'" /></td>\
+                    <td class="min"><input type="number" min="100" max="2000" value="' + SERVO_CONFIG[obj].min + '" /></td>\
+                    <td class="middle"><input type="number" min="1000" max="2000" value="' + SERVO_CONFIG[obj].middle +'" /></td>\
+                    <td class="max"><input type="number" min="1000" max="3000" value="' + SERVO_CONFIG[obj].max +'" /></td>\
+                    <td class="minLimit"><input type="number" min="0" max="90" value="' + SERVO_CONFIG[obj].minLimit +'" /></td>\
                     <td class="maxLimit"><input type="number" min="0" max="90" value="' + SERVO_CONFIG[obj].maxLimit +'" /></td>\
                     ' + servoCheckbox + '\
                     <td class="direction">\
@@ -192,6 +192,8 @@ TABS.servos.initialize = function (callback) {
                 SERVO_CONFIG[info.obj].max = parseInt($('.max input', this).val());
                 SERVO_CONFIG[info.obj].minLimit = parseInt($('.minLimit input', this).val());
                 SERVO_CONFIG[info.obj].maxLimit = parseInt($('.maxLimit input', this).val());
+                
+                console.log("servo "+info.obj+" minLimit: "+SERVO_CONFIG[info.obj].minLimit+" maxLimit:"+SERVO_CONFIG[info.obj].maxLimit );
 
                 // update rate if direction fields exist
                 if ($('.direction .radio', this).length){
@@ -215,15 +217,12 @@ TABS.servos.initialize = function (callback) {
                 console.log("channel forward ok");
                 MSP.send_message(MSP_codes.MSP_SET_SERVO_CONF, MSP.crunch(MSP_codes.MSP_SET_SERVO_CONF), false, function () {
                     console.log("servo conf ok");
-                    MSP.send_message(MSP_codes.MSP_SET_SERVO_LIMIT, MSP.crunch(MSP_codes.MSP_SET_SERVO_LIMIT), false, function () {
-                        console.log("servo limit ok");
-                        if (save_to_eeprom) {
-                            // Save changes to EEPROM
-                            MSP.send_message(MSP_codes.MSP_EEPROM_WRITE, false, false, function () {
-                                GUI.log(chrome.i18n.getMessage('servosEepromSave'));
-                            });
-                        }
-                    });
+                    if (save_to_eeprom) {
+                        // Save changes to EEPROM
+                        MSP.send_message(MSP_codes.MSP_EEPROM_WRITE, false, false, function () {
+                            GUI.log(chrome.i18n.getMessage('servosEepromSave'));
+                        });
+                    }
                 });
             });
 
