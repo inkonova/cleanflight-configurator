@@ -1,11 +1,11 @@
 {
     "manifest_version": 2,
     "minimum_chrome_version": "38",
-    "version": "0.63.2",
-    "author": "Hydra",
-    "name": "Cleanflight - Configurator",
-    "short_name": "cleanflight",
-    "description": "Crossplatform configuration tool for Cleanflight flight control system",
+    "version": "0.63.3",
+    "author": "Hydra,Mauro",
+    "name": "Tiltflight - Configurator",
+    "short_name": "tiltflight",
+    "description": "Crossplatform configuration tool for tiltdrone based on Cleanflight flight control system",
 
     "offline_enabled": true,
 

@@ -80,6 +80,9 @@ TABS.firmware_flasher.initialize = function (callback) {
                         "notes"     : release.body,
                         "status"    : release.prerelease ? "release-candidate" : "stable"
                     };
+                    
+                    console.log("descriptor");
+                    console.log(descriptor);
 
                     releaseDescritpors.push(descriptor);
                 });
@@ -95,7 +98,7 @@ TABS.firmware_flasher.initialize = function (callback) {
                 return cmpVal;
             });
 
-            var optionIndex = 0;
+            var optionIndex = 1;
             releaseDescritpors.forEach(function(descriptor){
                 var select_e =
                         $("<option value='{0}'>{1} {2} {3} ({4})</option>".format(
@@ -114,6 +117,8 @@ TABS.firmware_flasher.initialize = function (callback) {
         var processReleases = function (releases){
             var promises = [];
             releases.forEach(function(release){
+                console.log("found release: "+release);
+                console.log(release);
                 var promise = Q.defer();
                 promises.push(promise);
                 $.get(release.assets_url).
@@ -133,12 +138,13 @@ TABS.firmware_flasher.initialize = function (callback) {
             })
         };
 
-        $.get('https://api.github.com/repos/cleanflight/cleanflight/releases', function (releases){
+        $.get('https://api.github.com/repos/inkonova/cleanflight/releases', function (releases){
             processReleases(releases);
             TABS.firmware_flasher.releases = releases;
             
             // bind events
             $('select[name="release"]').change(function() {
+                console.log("changed1");
                 if (!GUI.connect_lock) {
                     $('.progress').val(0).removeClass('valid invalid');
                     $('span.progressLabel').text(chrome.i18n.getMessage('firmwareFlasherLoadFirmwareFile'));
@@ -213,6 +219,7 @@ TABS.firmware_flasher.initialize = function (callback) {
          * Lock / Unlock the firmware download button according to the firmware selection dropdown.
          */
         $('select[name="release"]').change(function(evt){
+            console.log("changed "+evt.target.value);
             if (evt.target.value=="0") {
                 $("a.load_remote_file").addClass('locked');
             }
@@ -243,7 +250,7 @@ TABS.firmware_flasher.initialize = function (callback) {
                         $('a.flash_firmware').removeClass('locked');
 
                         if (summary.commit) {
-                            $.get('https://api.github.com/repos/cleanflight/cleanflight/commits/' + summary.commit, function (data) {
+                            $.get('https://api.github.com/repos/inkonova/cleanflight/commits/' + summary.commit, function (data) {
                                 var data = data,
                                     d = new Date(data.commit.author.date),
                                     offset = d.getTimezoneOffset() / 60,
@@ -255,7 +262,7 @@ TABS.firmware_flasher.initialize = function (callback) {
     
                                 $('div.git_info .committer').text(data.commit.author.name);
                                 $('div.git_info .date').text(date);
-                                $('div.git_info .hash').text(data.sha.slice(0, 7)).prop('href', 'https://github.com/cleanflight/cleanflight/commit/' + data.sha);
+                                $('div.git_info .hash').text(data.sha.slice(0, 7)).prop('href', 'https://github.com/inkonova/cleanflight/commit/' + data.sha);
                                 
                                 $('div.git_info .message').text(data.commit.message);
     
