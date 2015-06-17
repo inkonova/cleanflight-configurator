@@ -217,12 +217,15 @@ TABS.servos.initialize = function (callback) {
                 console.log("channel forward ok");
                 MSP.send_message(MSP_codes.MSP_SET_SERVO_CONF, MSP.crunch(MSP_codes.MSP_SET_SERVO_CONF), false, function () {
                     console.log("servo conf ok");
-                    if (save_to_eeprom) {
-                        // Save changes to EEPROM
-                        MSP.send_message(MSP_codes.MSP_EEPROM_WRITE, false, false, function () {
-                            GUI.log(chrome.i18n.getMessage('servosEepromSave'));
-                        });
-                    }
+                    MSP.send_message(MSP_codes.MSP_SET_SERVO_ANGLE, MSP.crunch(MSP_codes.MSP_SET_SERVO_ANGLE), false, function () {
+                        console.log("servo angle ok");
+                        if (save_to_eeprom) {
+                            // Save changes to EEPROM
+                            MSP.send_message(MSP_codes.MSP_EEPROM_WRITE, false, false, function () {
+                                GUI.log(chrome.i18n.getMessage('servosEepromSave'));
+                            });
+                        }
+                    });
                 });
             });
 

@@ -53,7 +53,8 @@ var MSP_codes = {
     MSP_BOXIDS:             119,
     MSP_SERVO_CONF:         120,
     MSP_TILT_ARM_CONFIG:    123,
-    
+    MSP_SET_SERVO_ANGLE:    124,
+
     MSP_SET_RAW_RC:         200,
     MSP_SET_RAW_GPS:        201,
     MSP_SET_PID:            202,
@@ -452,11 +453,20 @@ var MSP = {
                 }
                 break;
             case MSP_codes.MSP_TILT_ARM_CONFIG:
+                if (data.byteLength != 5){
+                    console.log("MSP_TILT_ARM_CONFIG size mismarch: "+data.byteLength);
+                }
+                
                 TILT_ARM_CONFIG.flagEnable = data.getUint8(0);
+                console.log("flagEnable: "+TILT_ARM_CONFIG.flagEnable);
                 TILT_ARM_CONFIG.pitchDivisior = data.getUint8(1);
+                console.log("pitchDivisior: "+TILT_ARM_CONFIG.pitchDivisior);
                 TILT_ARM_CONFIG.thrustLiftoff = data.getUint8(2);
+                console.log("thrustLiftoff: "+TILT_ARM_CONFIG.thrustLiftoff);
                 TILT_ARM_CONFIG.gearRatio = data.getUint8(3);
-				TILT_ARM_CONFIG.channel = data.getUint8(4);
+                console.log("gearRatio: "+TILT_ARM_CONFIG.gearRatio);
+                TILT_ARM_CONFIG.channel = data.getUint8(4);
+                console.log("channel: "+TILT_ARM_CONFIG.channel);
                 break;
             case MSP_codes.MSP_SET_RAW_RC:
                 break;
@@ -1048,13 +1058,13 @@ MSP.crunch = function (code) {
                 buffer.push(highByte(SERVO_CONFIG[i].middle));
 
                 buffer.push(lowByte(SERVO_CONFIG[i].rate));
-
+            }
+            break;
+        case MSP_codes.MSP_SET_SERVO_ANGLE:
+            for (var i = 0; i < SERVO_CONFIG.length; i++) {
                 buffer.push(lowByte(SERVO_CONFIG[i].minLimit));
-
                 buffer.push(lowByte(SERVO_CONFIG[i].maxLimit));
             }
-            console.log("buffer size for servo: " + buffer.length+" number: "+SERVO_CONFIG.length);
-            break;
         case MSP_codes.MSP_SET_TILT_ARM:
             buffer.push(lowByte(TILT_ARM_CONFIG.flagEnable));
             buffer.push(lowByte(TILT_ARM_CONFIG.pitchDivisior));

@@ -21,12 +21,12 @@ TABS.tilt_arm.initialize = function (callback) {
         $('#content').load("./tabs/tilt_arm.html", process_html);
     }
     
-    MSP.send_message(MSP_codes.MSP_IDENT, false, false, get_tilt_arm_conf_data);
-    
     var pitchFlagEnable      =    parseInt('1', 2);
     var thrustFlagEnable     =   parseInt('10', 2);
     var rollyawFlagEnable    =  parseInt('100', 2);
     var thrustBodyFlagEnable = parseInt('1000', 2);
+    
+    MSP.send_message(MSP_codes.MSP_IDENT, false, false, get_tilt_arm_conf_data);
     
     function process_html() {
         
@@ -52,8 +52,10 @@ TABS.tilt_arm.initialize = function (callback) {
             }
             $("#CHANNELS").append('<option value='+i+' '+selected+'>AUX'+(i+1)+'</option>');
         }
-        if (!found)
-			$("#CHANNELS").append('<option value=0 selected>WARNING: SELECT ONE CHANNEL HERE; invalid channel selected AUX'+(TILT_ARM_CONFIG.channel-4)+'</option>');
+        if (!found){
+            $("#CHANNELS").append('<option value=0 selected>WARNING: SELECT ONE CHANNEL HERE; invalid channel selected AUX'+(TILT_ARM_CONFIG.channel-4)+'</option>');
+            console.log("TILT_ARM_CONFIG.channel "+TILT_ARM_CONFIG.channel);
+        }
         
         console.log("TILT_ARM_CONFIG.flagEnable "+TILT_ARM_CONFIG.flagEnable);
         
