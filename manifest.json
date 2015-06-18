@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "minimum_chrome_version": "38",
-    "version": "0.63.3",
+    "version": "0.63.4",
     "author": "Hydra,Mauro",
     "name": "Tiltflight - Configurator",
     "short_name": "tiltflight",
