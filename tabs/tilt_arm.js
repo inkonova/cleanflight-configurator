@@ -88,6 +88,7 @@ TABS.tilt_arm.initialize = function (callback) {
         
         $('#PITCH_VALUE').val(TILT_ARM_CONFIG.pitchDivisior);
         $('#THRUST_VALUE').val(TILT_ARM_CONFIG.thrustLiftoff);
+        $('#THRUST_VALUE_TEXT').val(TILT_ARM_CONFIG.thrustLiftoff+"%");
         $('#GEAR_RATIO').val(TILT_ARM_CONFIG.gearRatio/100);
         
         $('a.save').click(function () {
@@ -117,6 +118,10 @@ TABS.tilt_arm.initialize = function (callback) {
             });
             
             get_tilt_arm_conf_data();
+        });
+        
+        $('#THRUST_VALUE').on('change', function(){
+            $('#THRUST_VALUE_TEXT').val( $('#THRUST_VALUE').val()+"%" );
         });
         
         // status data pulled via separate timer with static speed

@@ -50,16 +50,16 @@
     height:35px;
 }
 
-.tab-tilt-arm input[type="number"] {
-    display: block;
-    width: 100%;
+.tab-tilt-arm .slider-value {
+    display: inlie;
+    width: 40px;
     height: 20px;
     line-height: 20px;
     text-align: right;
 }
 
 .tab-tilt-arm input[type="range"] {
-    width: 80%;
+    width: calc(80% - 40px);
     height: 20px;
     line-height: 20px;
     text-align: right;
