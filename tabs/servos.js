@@ -91,9 +91,9 @@ TABS.servos.initialize = function (callback) {
             $('div.tab-servos table.fields').append('\
                 <tr> \
                     <td style="text-align: center">' + name + '</td>\
-                    <td class="middle"><input type="number" min="1000" max="2000" value="' + SERVO_CONFIG[obj].middle + '" /></td>\
-                    <td class="min"><input type="number" min="1000" max="2000" value="' + SERVO_CONFIG[obj].min +'" /></td>\
-                    <td class="max"><input type="number" min="1000" max="2000" value="' + SERVO_CONFIG[obj].max +'" /></td>\
+                    <td class="middle"><input type="number" min="500" max="2500" value="' + SERVO_CONFIG[obj].middle + '" /></td>\
+                    <td class="min"><input type="number" min="500" max="2500" value="' + SERVO_CONFIG[obj].min +'" /></td>\
+                    <td class="max"><input type="number" min="500" max="2500" value="' + SERVO_CONFIG[obj].max +'" /></td>\
                     ' + servoCheckbox + '\
                     <td class="direction">\
                         <input class="first" type="checkbox"/><span class="name">' + name + '</span>\
@@ -205,7 +205,7 @@ TABS.servos.initialize = function (callback) {
         $('div.tab-servos table.fields tr:not(:first)').remove();
 
         var model = $('div.tab-servos strong.model');
-        var supported_models = [1, 4, 5, 8, 14, 20, 21];
+        var supported_models = [1, 4, 5, 8, 14, 20, 21, 23, 24];
 
         switch (CONFIG.multiType) {
             case 1: // TRI
@@ -276,7 +276,12 @@ TABS.servos.initialize = function (callback) {
                 process_servos('Front', 'F YAW', 5, true);
                 process_servos('Rear', 'YAW', 6, true);
                 break;
+            case 23: // Tilting servo quad
+            case 24: // Tilting servo octo
+                model.text('Tilting pitch');
 
+                process_servos('Pitch Servo', '', 0, 3);
+                break;
             default:
                 model.text(chrome.i18n.getMessage('servosModelNoSupport'));
 

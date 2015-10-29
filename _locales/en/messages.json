@@ -87,6 +87,9 @@
     "tabServos": {
         "message": "Servos"
     },
+    "tabTiltArm": {
+        "message": "Tilt Arm"
+    },
     "tabGPS": {
         "message": "GPS"
     },
@@ -832,6 +835,13 @@
     },
     "servosEepromSave": {
         "message": "EEPROM <span style=\"color: green\">saved</span>"
+    },
+
+    "tiltArmSave":{
+		"message":"Save"
+    },
+    "tiltArmModelNoSupport":{
+		"message":"This model does not support tilting arms"
     },
 
     "gpsHead": {
