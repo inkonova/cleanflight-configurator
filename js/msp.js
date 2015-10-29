@@ -449,16 +449,26 @@ var MSP = {
             case MSP_codes.MSP_SERVO_CONF:
                 SERVO_CONFIG = []; // empty the array as new data is coming in
 
-                if (data.byteLength % 7 == 0) {
-                    for (var i = 0; i < data.byteLength; i += 7) {
+                console.log("Servo dataa coming: "+data.byteLength);
+                if (data.byteLength % 14 == 0) {
+                    for (var i = 0; i < data.byteLength; i += 14) {
                         var arr = {
                             'min': data.getInt16(i, 1),
                             'max': data.getInt16(i + 2, 1),
                             'middle': data.getInt16(i + 4, 1),
-                            'rate': data.getInt8(i + 6)
+                            'rate': data.getInt8(i + 6),
+                            'angleAtMin': data.getInt8(i + 7), //degree 0-180
+                            'angleAtMax': data.getInt8(i + 8), //degree 0-180
+                            'indexOfChannelToForward': data.getInt8(i + 9),
+                            'reversedSources': data.getInt32(i + 10)
                         };
+                        
+                        if (arr.indexOfChannelToForward > 255) {
+                            arr.indexOfChannelToForward = undefined;
+                        }
     
                         SERVO_CONFIG.push(arr);
+                        console.log("Saved servo");
                     }
                 }
                 break;
@@ -723,16 +733,6 @@ var MSP = {
                     ADJUSTMENT_RANGES.push(adjustmentRange);
                 }
                 break;
-            case MSP_codes.MSP_CHANNEL_FORWARDING:
-                for (var i = 0; i < data.byteLength && i < SERVO_CONFIG.length; i ++) {
-                    var channelIndex = data.getUint8(i);
-                    if (channelIndex < 255) {
-                        SERVO_CONFIG[i].indexOfChannelToForward = channelIndex;
-                    } else {
-                        SERVO_CONFIG[i].indexOfChannelToForward = undefined;
-                    }
-                }
-                break;
 
             case MSP_codes.MSP_LED_STRIP_CONFIG:
                 LED_STRIP = [];
@@ -848,6 +848,7 @@ var MSP = {
                 checksum = 0;
 
             bufferOut = new ArrayBuffer(size);
+            console.log("sending data: "+data.length+" "+bufferOut.byteLength+" "+data);
             bufView = new Uint8Array(bufferOut);
 
             bufView[0] = 36; // $
@@ -930,7 +931,7 @@ var MSP = {
 /**
  * Encode the request body for the MSP request with the given code and return it as an array of bytes.
  */
-MSP.crunch = function (code) {
+MSP.crunch = function (code, servoIndex) {
     var buffer = [];
 
     switch (code) {
@@ -1057,7 +1058,10 @@ MSP.crunch = function (code) {
             buffer.push(MISC.vbatwarningcellvoltage * 10);
             break;
         case MSP_codes.MSP_SET_SERVO_CONF:
-            for (var i = 0; i < SERVO_CONFIG.length; i++) {
+            var i = servoIndex;
+            //for (var i = 0; i < SERVO_CONFIG.length; i++) {
+                buffer.push(lowByte(i));
+
                 buffer.push(lowByte(SERVO_CONFIG[i].min));
                 buffer.push(highByte(SERVO_CONFIG[i].min));
 
@@ -1068,7 +1072,18 @@ MSP.crunch = function (code) {
                 buffer.push(highByte(SERVO_CONFIG[i].middle));
 
                 buffer.push(lowByte(SERVO_CONFIG[i].rate));
-            }
+
+                buffer.push(lowByte(SERVO_CONFIG[i].angleAtMin));
+
+                buffer.push(lowByte(SERVO_CONFIG[i].angleAtMax));
+                
+                buffer.push(lowByte(SERVO_CONFIG[i].indexOfChannelToForward));
+                
+                buffer.push(specificByte(SERVO_CONFIG[i].indexOfChannelToForward, 0));
+                buffer.push(specificByte(SERVO_CONFIG[i].indexOfChannelToForward, 1));
+                buffer.push(specificByte(SERVO_CONFIG[i].indexOfChannelToForward, 2));
+                buffer.push(specificByte(SERVO_CONFIG[i].indexOfChannelToForward, 3));
+            //}
             break;
        case MSP_codes.MSP_SET_TILT_ARM:
             buffer.push(lowByte(TILT_ARM_CONFIG.flagEnable));

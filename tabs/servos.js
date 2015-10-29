@@ -16,11 +16,7 @@ TABS.servos.initialize = function (callback) {
     }
 
     function get_servo_conf_data() {
-        MSP.send_message(MSP_codes.MSP_SERVO_CONF, false, false, get_channel_forwarding_data);
-    }
-
-    function get_channel_forwarding_data() {
-        MSP.send_message(MSP_codes.MSP_CHANNEL_FORWARDING, false, false, get_rc_data);
+        MSP.send_message(MSP_codes.MSP_SERVO_CONF, false, false, get_rc_data);
     }
 
    function get_rc_data() {
@@ -188,8 +184,8 @@ TABS.servos.initialize = function (callback) {
                 }
             });
             
-            MSP.send_message(MSP_codes.MSP_SET_CHANNEL_FORWARDING, MSP.crunch(MSP_codes.MSP_SET_CHANNEL_FORWARDING), false, function () {
-                MSP.send_message(MSP_codes.MSP_SET_SERVO_CONF, MSP.crunch(MSP_codes.MSP_SET_SERVO_CONF), false, function () {
+            for (var i = 0; i < SERVO_CONFIG.length; i++){
+                MSP.send_message(MSP_codes.MSP_SET_SERVO_CONF, MSP.crunch(MSP_codes.MSP_SET_SERVO_CONF, i), false, function () {
                     if (save_to_eeprom) {
                         // Save changes to EEPROM
                         MSP.send_message(MSP_codes.MSP_EEPROM_WRITE, false, false, function () {
@@ -197,7 +193,7 @@ TABS.servos.initialize = function (callback) {
                         });
                     }
                 });
-            });
+            }
 
         }
 
