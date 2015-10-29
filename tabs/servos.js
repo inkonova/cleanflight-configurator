@@ -92,7 +92,7 @@ TABS.servos.initialize = function (callback) {
                 <tr> \
                     <td style="text-align: center">' + name + '</td>\
                     <td class="min"><input type="number" min="100" max="2000" value="' + SERVO_CONFIG[obj].min + '" /></td>\
-                    <td class="middle"><input type="number" min="1000" max="2000" value="' + SERVO_CONFIG[obj].middle +'" /></td>\
+                    <td class="middle"><input type="number" min="500" max="2500" value="' + SERVO_CONFIG[obj].middle +'" /></td>\
                     <td class="max"><input type="number" min="1000" max="3000" value="' + SERVO_CONFIG[obj].max +'" /></td>\
                     <td class="minLimit"><input type="number" min="0" max="90" value="' + SERVO_CONFIG[obj].minLimit +'" /></td>\
                     <td class="maxLimit"><input type="number" min="0" max="90" value="' + SERVO_CONFIG[obj].maxLimit +'" /></td>\
@@ -235,7 +235,7 @@ TABS.servos.initialize = function (callback) {
         $('div.tab-servos table.fields tr:not(:first)').remove();
 
         var model = $('div.tab-servos strong.model');
-        var supported_models = [1, 4, 5, 8, 14, 20, 21, 23];
+        var supported_models = [1, 4, 5, 8, 14, 20, 21, 23, 24];
 
         switch (CONFIG.multiType) {
             case 1: // TRI
@@ -315,6 +315,7 @@ TABS.servos.initialize = function (callback) {
                 process_servos('Roll Servo', '', 1, 2);
                 break;
             case 23: // Tilting servo
+			case 24: // Tilting servo
                 model.text('Tilting pitch');
 
                 process_servos('Pitch Servo', '', 0, 3);

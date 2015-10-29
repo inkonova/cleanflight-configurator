@@ -30,7 +30,7 @@ TABS.tilt_arm.initialize = function (callback) {
     
     function process_html() {
         
-        if (CONFIG.multiType != 23){ // QuadXTiltArm
+		if (CONFIG.multiType != 23 && CONFIG.multiType != 24){ // QuadXTiltArm
             $('div.tab-tilt-arm strong.model').text(chrome.i18n.getMessage('tiltArmModelNoSupport'));
             $('#TILT_TABLE').hide();
         }
