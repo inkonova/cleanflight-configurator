@@ -90,6 +90,8 @@ TABS.servos.initialize = function (callback) {
                     <td class="middle"><input type="number" min="500" max="2500" value="' + SERVO_CONFIG[obj].middle + '" /></td>\
                     <td class="min"><input type="number" min="500" max="2500" value="' + SERVO_CONFIG[obj].min +'" /></td>\
                     <td class="max"><input type="number" min="500" max="2500" value="' + SERVO_CONFIG[obj].max +'" /></td>\
+                    <td class="minLimit"><input type="number" min="0" max="90" value="' + SERVO_CONFIG[obj].angleAtMin +'" /></td>\
+                    <td class="maxLimit"><input type="number" min="0" max="90" value="' + SERVO_CONFIG[obj].angleAtMax +'" /></td>\
                     ' + servoCheckbox + '\
                     <td class="direction">\
                         <input class="first" type="checkbox"/><span class="name">' + name + '</span>\
@@ -125,7 +127,21 @@ TABS.servos.initialize = function (callback) {
 
                 // select current rate
                 select.val(SERVO_CONFIG[obj].rate);
-            } else {
+            }  else if (directions == 3) {
+                // removing checkboxes
+                $('div.tab-servos table.fields tr:last td.direction').html('');
+                
+                // adding radio button
+                $('div.tab-servos table.fields tr:last td.direction').append('\
+                <div class="radio"> \
+                <input type="radio" name="direction" value="false">Normal<br>\
+                <input type="radio" name="direction" value="true">Reverse\
+                </div>\
+                ');
+
+                //selecting default value
+                $('input:radio[name=direction]').val([bit_check(SERVO_CONFIG[obj].rate, 0)]);
+            }else {
                 // removing checkboxes
                 $('div.tab-servos table.fields tr:last td.direction').html('');
             }
@@ -170,21 +186,36 @@ TABS.servos.initialize = function (callback) {
                 SERVO_CONFIG[info.obj].middle = parseInt($('.middle input', this).val());
                 SERVO_CONFIG[info.obj].min = parseInt($('.min input', this).val());
                 SERVO_CONFIG[info.obj].max = parseInt($('.max input', this).val());
-
+                SERVO_CONFIG[info.obj].angleAtMin = parseInt($('.minLimit input', this).val());
+                SERVO_CONFIG[info.obj].angleAtMax = parseInt($('.maxLimit input', this).val());
+                
                 // update rate if direction fields exist
-                if ($('.direction input', this).length) {
-                    if ($('.direction input:first', this).is(':checked')) SERVO_CONFIG[info.obj].rate = bit_set(SERVO_CONFIG[info.obj].rate, 0);
-                    else SERVO_CONFIG[info.obj].rate = bit_clear(SERVO_CONFIG[info.obj].rate, 0);
+                if ($('.direction .radio', this).length){
+                    var val = $('input:radio[name=direction]:checked').val();
+                    console.log('direction radio:'+val);
+                    if (val == 'true') 
+                        SERVO_CONFIG[info.obj].reversedSources = 1;
+                    else
+                        SERVO_CONFIG[info.obj].reversedSources = 0;
+                }else if ($('.direction input', this).length) {
+                    if ($('.direction input:first', this).is(':checked')) 
+                        SERVO_CONFIG[info.obj].rate = bit_set(SERVO_CONFIG[info.obj].rate, 0);
+                    else 
+                        SERVO_CONFIG[info.obj].rate = bit_clear(SERVO_CONFIG[info.obj].rate, 0);
 
-                    if ($('.direction input:last', this).is(':checked')) SERVO_CONFIG[info.obj].rate = bit_set(SERVO_CONFIG[info.obj].rate, 1);
-                    else SERVO_CONFIG[info.obj].rate = bit_clear(SERVO_CONFIG[info.obj].rate, 1);
+                    if ($('.direction input:last', this).is(':checked')) 
+                        SERVO_CONFIG[info.obj].rate = bit_set(SERVO_CONFIG[info.obj].rate, 1);
+                    else 
+                        SERVO_CONFIG[info.obj].rate = bit_clear(SERVO_CONFIG[info.obj].rate, 1);
                 } else if ($('.direction select', this).length) {
                     var val = parseInt($('.direction select', this).val());
                     SERVO_CONFIG[info.obj].rate = val;
                 }
             });
             
+            //TODO: this can be done better if we save an array of function and then put one inside the callback of the other.
             for (var i = 0; i < SERVO_CONFIG.length; i++){
+                console.log("Saving configuration for Servo "+i);
                 MSP.send_message(MSP_codes.MSP_SET_SERVO_CONF, MSP.crunch(MSP_codes.MSP_SET_SERVO_CONF, i), false, function () {
                     if (save_to_eeprom) {
                         // Save changes to EEPROM

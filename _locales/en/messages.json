@@ -815,6 +815,12 @@
     "servosMax": {
         "message": "MAX"
     },
+    "angleAtMin": {
+        "message": "Angle at MIN"
+    },
+    "angleAtMax": {
+        "message": "Angle at MAX"
+    },
     "servosDirection": {
         "message": "Direction"
     },

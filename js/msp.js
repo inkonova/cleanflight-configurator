@@ -1079,10 +1079,10 @@ MSP.crunch = function (code, servoIndex) {
                 
                 buffer.push(lowByte(SERVO_CONFIG[i].indexOfChannelToForward));
                 
-                buffer.push(specificByte(SERVO_CONFIG[i].indexOfChannelToForward, 0));
-                buffer.push(specificByte(SERVO_CONFIG[i].indexOfChannelToForward, 1));
-                buffer.push(specificByte(SERVO_CONFIG[i].indexOfChannelToForward, 2));
-                buffer.push(specificByte(SERVO_CONFIG[i].indexOfChannelToForward, 3));
+                buffer.push(specificByte(SERVO_CONFIG[i].reversedSources, 0));
+                buffer.push(specificByte(SERVO_CONFIG[i].reversedSources, 1));
+                buffer.push(specificByte(SERVO_CONFIG[i].reversedSources, 2));
+                buffer.push(specificByte(SERVO_CONFIG[i].reversedSources, 3));
             //}
             break;
        case MSP_codes.MSP_SET_TILT_ARM:
